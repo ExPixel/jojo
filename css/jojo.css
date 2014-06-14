@@ -1,0 +1,20 @@
+.page {
+    display: none;
+    visibility: hidden;
+}
+
+.page-container {
+	margin-left: auto;
+	margin-right: auto;
+	display: block;
+	text-align: center;
+}
+
+body {
+	margin-top: 1em;
+}
+
+.page-content {
+	width: 100%;
+	height: 80%;
+}

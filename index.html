@@ -1,0 +1,66 @@
+<html lang="en">
+    <title>JOJO</title>
+    <head>
+        <link rel="stylesheet" href="css/bootstrap.min.css" />
+        <link rel="stylesheet" href="css/jojo.css" />
+    </head>
+    <body>
+        <div id="container" class="container-fluid">
+            <div class="center-block text-center"><h3>JOJO <small>Json &raquo; Java Object</small></h3></div>
+            <div class="row">
+                <!-- <div class="col-md-4"></div> -->
+                <div class="col-md-6 col-md-offset-3">
+
+                    <!-- BEGIN JSON INPUT -->
+                    <div id="json-input" class="page">
+                        <div class="page-content" id="json-input-editor"></div>
+                    </div>
+
+                    <!-- BEGIN EDIT CLASSES -->
+                    <div id="edit-classes" class="page">
+                        <div class="page-content">
+                            <form onsubmit="__edit_classes_submit(); return false;">
+                                <label>Top Level Class Name</label>
+                                <input type="text" class="form-control" id="toplevelclass" placeholder="Top Level Class Name" /> <br />
+
+                                <label>Variable Scopes</label>
+                                <input type="text" class="form-control" id="variablescopes" placeholder="Variable Scopes" value="private" /> <br />
+
+                                <input type="submit" class="btn btn-primary" value="Generate Java" />
+                            </form>
+                            <div class="well">More Coming Soon...</div>
+                        </div>
+                    </div>
+
+                    <!-- BEGIN JAVA OUTPUT -->
+                    <div id="java-output" class="page">
+                        <div class="page-content">
+                            <div class="page-content" id="java-output-editor"></div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <div class="page-container">
+                        <ul class="pagination" data-jojo="app-pages">
+                            <li><a href="#">&laquo;</a></li> 
+                            <li class="active"><a href="#json-input">JSON Input</a></li>
+                            <li><a href="#edit-classes">Edit Classes</a></li>
+                            <!-- <li  class="disabled"><a href="#edit-classes" data-toggle="tooltip" data-placement="top" title="Coming Soon!">Edit Classes</a></li> -->
+                            <li><a href="#java-output">Java Output</a></li>
+                            <li><a href="#">&raquo;</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="//cdn.jsdelivr.net/ace/1.1.3/min/ace.js"></script>
+        <script type="text/javascript" src="js/jojo.js"></script>
+    </body>
+</html>
