@@ -91,6 +91,7 @@ $(function() {
             if(!toppar) {
                 this.toppar = this;
                 this.__classes = [];
+                this.__classhashes = {};
                 this.inner = false;
             } else {
                 this.toppar = toppar;
@@ -100,6 +101,7 @@ $(function() {
             this.par = par;
             this.__name = __name;
             this.obj = obj;
+            this.__hash = this.getObjectTypeHash(this.obj);
             this.variables = [];
             this.process();
         }
@@ -127,7 +129,7 @@ $(function() {
         JavaClass.prototype.getVarType = function(k, v) {
             if(v == null) return null;
             if(typeof v === "object") {
-                if(v instanceof Array) return "Object[]";
+                if(v instanceof Array) return this.arrayType(k, v) + "[]";
                 else return this.spawnClass(k, v);
             } else if(typeof v === "number") {
                 if(v && v.toString().indexOf('.') === -1) return "int";
@@ -140,11 +142,58 @@ $(function() {
         }
 
         JavaClass.prototype.spawnClass = function(name, obj) {
-            return new JavaClass(this, name, obj, this.toppar);
+            var hash = this.getObjectTypeHash(obj);
+            if(this.toppar.__classhashes[hash]) return this.toppar.__classhashes[hash]
+            var __class = new JavaClass(this, name, obj, this.toppar);
+            this.toppar.__classhashes[hash] = __class;
+            return __class;
         }
 
         JavaClass.root = function(obj) {
             return new JavaClass(null, null, obj, null);
+        }
+
+        JavaClass.prototype.arrayType = function(k, v) {
+            var o;
+            var curtype = null;
+            var i = 0;
+            for(o in v) {
+                var otype = this.getVarType(k + "__index_" + (++i), v[o]);
+                if(curtype != null) {
+                    if(curtype != otype) return "Object";
+                } else {
+                    curtype = otype;
+                    console.log("switching to: " + otype);
+                }
+            }
+            return (curtype instanceof JavaClass ? "%(" + curtype.__hash + ")" : curtype);
+        }
+
+        JavaClass.prototype.getObjectTypeHash = function(v) {
+            var prop;
+            var str = "";
+            for(prop in v) {
+                if(str.length > 0) str += ",";
+                str += prop;
+            }
+            return "{" + str + "}";
+        }
+
+        JavaClass.prototype.hashType = function(v) {
+            if(v == null) return null;
+            if(typeof v === "object") {
+                if(v instanceof Array) return this.arrayType(v);
+                else return this.getObjectTypeHash(v);
+            } else if(typeof v === "number") {
+                if(v && v.toString().indexOf('.') === -1) return "int";
+                else return "double";
+            } else if(typeof v === "boolean") {
+                return "boolean";
+            } else if(typeof v === "string") {
+                return "String";
+            } else {
+                return typeof v;
+            }
         }
 
         return JavaClass;
@@ -155,7 +204,7 @@ $(function() {
         jsoneditor.getSession().setMode("ace/mode/json");
         jsoneditor.session.setUseWorker(false);
         page = pghelper(pchange);
-        jsoneditor.setValue("{\r\n\t\"firstName\": \"John\",\r\n\t\"lastName\": \"Smith\",\r\n\t\"address\": {\r\n\t\t\"streetAddress\": \"21 Jump Street\",\r\n\t\t\"city\": \"New York\"\r\n\t}\r\n}");
+        // jsoneditor.setValue("{\r\n\t\"firstName\": \"John\",\r\n\t\"lastName\": \"Smith\",\r\n\t\"address\": {\r\n\t\t\"streetAddress\": \"21 Jump Street\",\r\n\t\t\"city\": \"New York\"\r\n\t}\r\n}");
         jsoneditor.focus();
 
 
@@ -169,6 +218,10 @@ $(function() {
         var obj = eval( "(" + jsoneditor.getValue() + ")" );
         topclass = JavaClass.root(obj);
         console.log(topclass);
+    }
+
+    function escapeRegExp(str) {
+        return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     }
 
     function mkjava() {
@@ -186,11 +239,17 @@ $(function() {
         java += "\n";
 
         var c;
+
         for(c in topclass.__classes) {
             java += __tab( c2j(topclass.__classes[c]) ) + "\n";
         }
 
         java += "}";
+
+        for(c in topclass.__classes) {
+            c = topclass.__classes[c];
+            java = java.replace(new RegExp(escapeRegExp("%(" + c.__hash + ")"), "g"), c.getName());
+        }
 
         javaeditor.setValue(java);
     }
@@ -258,10 +317,10 @@ $(function() {
                 topclass = null;
                 break;
             case "edit-classes":
-                if(topclass == null) mkclasses();
+                mkclasses();
                 break;
             case "java-output":
-                if(topclass == null) mkclasses();
+                mkclasses();
                 mkjava();
                 javaeditor.focus();
                 break;
