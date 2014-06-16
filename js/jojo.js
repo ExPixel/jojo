@@ -109,8 +109,8 @@ $(function() {
         JavaClass.prototype.getName = function() {
             if(this.par) {
                 var pname = this.par.getName();
-                if(pname) return pname + "__" + this.__name;
-                else return "__" + this.__name;
+                if(pname) return pname + "_" + this.__name;
+                else return "_" + this.__name;
             } else {
                 return this.__name;
             }
@@ -158,7 +158,7 @@ $(function() {
             var curtype = null;
             var i = 0;
             for(o in v) {
-                var otype = this.getVarType(k + "__index_" + (++i), v[o]);
+                var otype = this.getVarType(k + "_index_" + (++i), v[o]);
                 if(curtype != null) {
                     if(curtype != otype) return "Object";
                 } else {
