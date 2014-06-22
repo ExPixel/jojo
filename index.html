@@ -14,21 +14,21 @@
                     <!-- BEGIN JSON INPUT -->
                     <div id="json-input" class="page">
                         <div class="page-content" id="json-input-editor">{
-    "firstName": "John",
-    "lastName": "Madison",
+    "first_name": "John",
+    "last_name": "Madison",
     "address": {
-        "streetAddress": "21 Jump Street",
+        "street_address": "21 Jump Street",
         "city": "New Pork"
     },
     "addresses": [
         {
-            "streetAddress": "22 Jump Street",
+            "street_address": "22 Jump Street",
             "city": "New York"
         }, {
-            "streetAddress": "23 Jump Street",
+            "street_address": "23 Jump Street",
             "city": "Boston"
         }, {
-            "streetAddress": "24 Jump Street",
+            "street_address": "24 Jump Street",
             "city": "San Francisco"
         }
     ],
@@ -42,10 +42,18 @@
                         <div class="page-content">
                             <form onsubmit="__edit_classes_submit(); return false;">
                                 <label>Top Level Class Name</label>
-                                <input type="text" class="form-control" id="toplevelclass" placeholder="Top Level Class Name" /> <br />
+                                <input type="text" class="form-control" id="toplevelclass" placeholder="Top Level Class Name" /><br />
 
                                 <label>Variable Scopes</label>
-                                <input type="text" class="form-control" id="variablescopes" placeholder="Variable Scopes" value="private" /> <br />
+                                <input type="text" class="form-control" id="variablescopes" placeholder="Variable Scopes" value="private" /><br />
+
+                                <div class="checkbox">
+                                    <label><input type="checkbox" id="camelmethods" checked="true" /> Force <code>camelCase</code> Methods</label><br />
+                                </div>
+
+                                <div class="checkbox">
+                                    <label><input type="checkbox" id="camelclasses" checked="true" /> Force <code>camelCase</code> Classes <small>(Will use underscores instead if not checked.)</small></label><br />
+                                </div>
 
                                 <input type="submit" class="btn btn-primary" value="Generate Java" />
                             </form>

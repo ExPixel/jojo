@@ -85,6 +85,8 @@ $(function() {
     var topclass = null;
     var varscopes = "private";
     var numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    var forceCamelCaseMethods = true;
+    var forceCamelClasses = true;
 
     var JavaClass = (function() {
         function JavaClass(par, __name, obj, toppar) {
@@ -107,13 +109,15 @@ $(function() {
         }
 
         JavaClass.prototype.getName = function() {
+            var __rtnName = "";
             if(this.par) {
                 var pname = this.par.getName();
-                if(pname) return pname + "_" + this.__name;
-                else return "_" + this.__name;
+                if(pname) __rtnName = pname + "_" + this.__name;
+                else __rtnName = "_" + this.__name;
             } else {
-                return this.__name;
+                return __rtnName = this.__name;
             }
+            return (forceCamelClasses ? makeCamelCase(__rtnName) : __rtnName);
         }
 
         JavaClass.prototype.process = function() {
@@ -226,6 +230,8 @@ $(function() {
 
     function mkjava() {
         varscopes = $("#variablescopes").val();
+        forceCamelCaseMethods = $("#camelmethods").is(':checked');
+        forceCamelClasses = $("#camelclasses").is(':checked');
         var topname = $("#toplevelclass").val();
         if(!topname || topname.trim().length < 1) {
             alert("Please set a top level class name.");
@@ -299,13 +305,18 @@ $(function() {
         return t;
     }
 
+    function makeCamelCase(str) {
+        str = str[0].toUpperCase() + str.substr(1);
+        return str.replace(/_./g, function(v) {return v[1].toUpperCase()});
+    }
+
     function uppercaseFirst(str) {
         return str[0].toUpperCase() + str.substr(1);
     }
 
     // Generate a getter for a variable.
     function genGetter(v) {
-        var t = "public " + typename(v) + " " + "get" + uppercaseFirst(v.name) + "() {";
+        var t = "public " + typename(v) + " " + "get" + (forceCamelCaseMethods ? makeCamelCase(v.name) : v.name) + "() {";
         t += "return this." + v.name + ";";
         t += "}";
         return t;
