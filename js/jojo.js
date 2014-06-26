@@ -141,7 +141,7 @@ $(function() {
                 if(v instanceof Array) return this.arrayType(k, v) + "[]";
                 else return this.spawnClass(k, v);
             } else if(typeof v === "number") {
-                if(v && v.toString().indexOf('.') === -1) return "int";
+                if(v.toString().indexOf('.') === -1) return "int";
                 else return "double";
             } else if(typeof v === "boolean") {
                 return "boolean";
@@ -195,7 +195,7 @@ $(function() {
                 if(v instanceof Array) return this.arrayType(v);
                 else return this.getObjectTypeHash(v);
             } else if(typeof v === "number") {
-                if(v && v.toString().indexOf('.') === -1) return "int";
+                if(v.toString().indexOf('.') === -1) return "int";
                 else return "double";
             } else if(typeof v === "boolean") {
                 return "boolean";
