@@ -1,12 +1,12 @@
 <html lang="en">
     <title>JOJO</title>
     <head>
-        <link rel="stylesheet" href="css/bootstrap.min.css" />
+        <link rel="stylesheet" href="css/bootstrap-themed.css" />
         <link rel="stylesheet" href="css/jojo.css" />
     </head>
     <body>
         <div id="container" class="container-fluid">
-            <div class="center-block text-center"><h3>JOJO <small>Json &raquo; Java Object</small></h3></div>
+            <div class="center-block text-center"><h3>JOJO <small>Json &raquo; Java Object</small></h3><hr style="width: 30%" /></div>
             <div class="row">
                 <!-- <div class="col-md-4"></div> -->
                 <div class="col-md-6 col-md-offset-3">
@@ -48,11 +48,19 @@
                                 <input type="text" class="form-control" id="variablescopes" placeholder="Variable Scopes" value="private" /><br />
 
                                 <div class="checkbox">
-                                    <label><input type="checkbox" id="camelmethods" checked="true" /> Force <code>camelCase</code> Methods</label><br />
+                                    <label><input type="checkbox" id="camelmethods" checked /> Force <code>camelCase</code> Methods</label><br />
                                 </div>
 
                                 <div class="checkbox">
-                                    <label><input type="checkbox" id="camelclasses" checked="true" /> Force <code>camelCase</code> Classes <small>(Will use underscores instead if not checked.)</small></label><br />
+                                    <label><input type="checkbox" id="camelclasses" checked /> Force <code>camelCase</code> Classes <small>(Will use underscores instead if not checked.)</small></label><br />
+                                </div>
+
+                                <div class="checkbox">
+                                    <label><input type="checkbox" id="gengetters" checked /> Generate <strong>getters</strong> for variables.</label><br />
+                                </div>
+
+                                <div class="checkbox">
+                                    <label><input type="checkbox" id="gensetters" /> Generate <strong>setters</strong> for variables.</label><br />
                                 </div>
 
                                 <input type="submit" class="btn btn-primary" value="Generate Java" />

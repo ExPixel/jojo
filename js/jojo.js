@@ -83,10 +83,15 @@ $(function() {
     var jsoneditor = ace.edit("json-input-editor");
     var javaeditor = ace.edit("java-output-editor");
     var topclass = null;
-    var varscopes = "private";
     var numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-    var forceCamelCaseMethods = true;
-    var forceCamelClasses = true;
+
+    var options = {
+        varscopes: "private",
+        forceCamelCaseMethods: true,
+        forceCamelClasses: true,
+        gensetters: false,
+        gengetters: true
+    }
 
     var JavaClass = (function() {
         function JavaClass(par, __name, obj, toppar) {
@@ -117,7 +122,7 @@ $(function() {
             } else {
                 return __rtnName = this.__name;
             }
-            return (forceCamelClasses ? makeCamelCase(__rtnName) : __rtnName);
+            return (options.forceCamelClasses ? makeCamelCase(__rtnName) : __rtnName);
         }
 
         JavaClass.prototype.process = function() {
@@ -162,7 +167,8 @@ $(function() {
             var curtype = null;
             var i = 0;
             for(o in v) {
-                var otype = this.getVarType(k + "_index_" + (++i), v[o]);
+                // var otype = this.getVarType(k + "_index_" + (++i), v[o]);
+                var otype = this.getVarType(k, v[o]);
                 if(curtype != null) {
                     if(curtype != otype) return "Object";
                 } else {
@@ -229,9 +235,12 @@ $(function() {
     }
 
     function mkjava() {
-        varscopes = $("#variablescopes").val();
-        forceCamelCaseMethods = $("#camelmethods").is(':checked');
-        forceCamelClasses = $("#camelclasses").is(':checked');
+        options.varscopes = $("#variablescopes").val();
+        options.forceCamelCaseMethods = $("#camelmethods").is(':checked');
+        options.forceCamelClasses = $("#camelclasses").is(':checked');
+        options.gengetters = $("#gengetters").is(':checked');
+        options.gensetters = $("#gensetters").is(':checked');
+
         var topname = $("#toplevelclass").val();
         if(!topname || topname.trim().length < 1) {
             alert("Please set a top level class name.");
@@ -290,14 +299,14 @@ $(function() {
         for(v in c.variables) {
             v = c.variables[v];
             var tname = typename(v);
-            t += "\t" + (varscopes && varscopes.trim().length > 0 ? varscopes + " " : "") + tname + " " + v.name + ";\n";
+            t += "\t" + (options.varscopes && options.varscopes.trim().length > 0 ? options.varscopes + " " : "") + tname + " " + v.name + ";\n";
         }
-
-        t += "\n"
-
+        
         for(v in c.variables) {
+            if(options.gengetters || options.gensetters) t += "\n";
             v = c.variables[v];
-            t += __tab(genGetter(v)) + "\n";
+            if(options.gengetters) t += __tab(genGetter(v)) + "\n";
+            if(options.gensetters) t += __tab(genSetter(v)) + "\n";
         }
 
         if(close === undefined || close) t += "}";
@@ -316,8 +325,16 @@ $(function() {
 
     // Generate a getter for a variable.
     function genGetter(v) {
-        var t = "public " + typename(v) + " " + "get" + (forceCamelCaseMethods ? makeCamelCase(v.name) : v.name) + "() {";
+        var t = "public " + typename(v) + " " + "get" + (options.forceCamelCaseMethods ? makeCamelCase(v.name) : v.name) + "() {";
         t += "return this." + v.name + ";";
+        t += "}";
+        return t;
+    }
+
+    // Generate a setter for a variable.
+    function genSetter(v) {
+        var t = "public void " + "set" + (options.forceCamelCaseMethods ? makeCamelCase(v.name) : v.name) + "(" + typename(v) + " v) {";
+        t += "this." + v.name + " = v;";
         t += "}";
         return t;
     }
