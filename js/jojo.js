@@ -1,3 +1,7 @@
+/*
+This was all written very quickly.
+This code is not intended to be edited or maintained by the mentally sane.
+*/
 var pghelper = (function(listener) {
     var pages = [];
     var page = -1;
